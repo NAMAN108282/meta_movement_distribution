@@ -49,7 +49,7 @@ The data pipeline consists of two Prefect flows:
 
 ## Project Architecture
 
-![Project Architecture](https://github.com/NAMAN108282/meta_movement_distribution/blob/master/Project%20Architecture.jpg?raw=true)
+![Project Architecture](https://github.com/NAMAN108282/meta_movement_distribution/blob/master/Project%20Architecture.jpg)
 
 **DataLake :** Google Cloud Platform Storage(GCS)
 
