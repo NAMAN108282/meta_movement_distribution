@@ -1,0 +1,10 @@
+{
+    "project_id": "meta-movement-dist",
+    "dataset_id": "mmd-dataset",
+    "cluster_name": "mmd-dataproc-cluster",
+    "region": "asia-south1",
+    "bucket": "mmd-bucket_meta-movement-dist",
+    "prefect_gcs_block": "mmd-bucket-cred",
+    "prefect_gcp_block": "mmd-gcp-creds",
+    "mmd_url": "https://data.humdata.org/dataset/movement-distribution"
+  }
