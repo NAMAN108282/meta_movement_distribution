@@ -7,7 +7,9 @@ This project is part of the [DEZoomcamp](https://github.com/DataTalksClub/data-e
 The main objective is to understand travel patterns based on Movement Distribution Maps that provides an overview of how far people in different regions travel
 from home on a given day.
 
-For more details on the pricing changes, please visit [Movement Distribution Maps](https://dataforgood.facebook.com/dfg/tools/movement-distribution-maps)
+For more details please visit:
+
+[**Movement Distribution Maps**](https://dataforgood.facebook.com/dfg/tools/movement-distribution-maps)
 
 **Questions the dataset helps answer:**
 
@@ -28,14 +30,14 @@ unavailable.
 and models
 
 
-[**Data Source**](https://data.humdata.org/dataset/movement-distribution)
+[Data Source](https://data.humdata.org/dataset/movement-distribution)
 ## Data Pipeline
 
 The data pipeline consists of two Prefect flows:
 
 1. **Ingest dataset:**
     - Web scrap dataset csv list into ./data folder
-    - Unzip csv into ./unzips folder
+    - Unzip csv into ./data/unzips folder
     - Transform into parquet format and load to GCS Bucket
 
 2. **Reporting Pipeline:**
@@ -72,12 +74,12 @@ Discover insights from live and interactive dashboard, which is updated monthly.
 
 
 
-## Reproduction Procedure
+## Project Recreation Procedure
 
 ### Prerequisites:
 - Python
 - Google Cloud Account
-- Google Cloud Service Account JSON Credentials for (BigQuery admin, DataProc admin and Cloud Storage admin)
+- Google Cloud Service Account JSON Credentials for (BigQuery admin, Compute Engine, DataProc admin and Cloud Storage admin)
 - Prefect Cloud
 - Terraform
 
@@ -117,7 +119,7 @@ Discover insights from live and interactive dashboard, which is updated monthly.
 
     - project_id
     - dataproc_cluster_name
-    - your region
+    - your gcp region
     - bucket_name
 
 
