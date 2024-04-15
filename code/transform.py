@@ -29,23 +29,25 @@ def correctSchema():
                         StructField("ds",DateType(),False)])
     return schema
 
-def read_parquet_data(spark: SparkSession, path: str) -> DataFrame:
+def read_data(spark: SparkSession, format: str, path: str) -> DataFrame:
     """
     Create dataframe from Parquet files.
     :param spark: A SparkSession object.
     :param path: The path to the Parquet file.
     :return: A DataFrame with the Parquet data.
     """
-    return spark.read.format("parquet").option("mergeSchema", "true").load(path)
-
+    if format == 'parquet':
+        return spark.read.format(format).option("mergeSchema", "true").load(path)
+    elif format == 'csv':
+        return spark.read.format(format).option("headers", 'true').load(path)
 
 bucket = "mmd-bucket_meta-movement-dist" #['bucket']
 spark = create_spark_session(bucket)
 
-df = read_parquet_data(spark, f"gs://{bucket}/data/*.parquet")
+df = read_data(spark, 'parquet', f"gs://{bucket}/data/*.parquet")
 df = df.withColumn(polygon_level, col(polygon_level).cast(IntegerType()))
 
-country_codes_df = read_parquet_data(spark, f"gs://{bucket}/code/country.csv")
+country_codes_df = read_parquet_data(spark, 'csv', f"gs://{bucket}/code/country.csv")
 
 
 # filter out long distances and noise fraction distributions
