@@ -15,6 +15,8 @@ def create_spark_session(gcs_bucket: str = None) -> SparkSession:
         spark.conf.set('temporaryGcsBucket', gcs_bucket)
     return spark
 
+
+# correct schema for data set
 def correctSchema():
     """
     schema for spark to transform parquet files
@@ -29,6 +31,8 @@ def correctSchema():
                         StructField("ds",DateType(),False)])
     return schema
 
+
+# Read spark dataframe function 
 def read_data(spark: SparkSession, format: str, path: str) -> DataFrame:
     """
     Create dataframe from Parquet files.
@@ -47,7 +51,7 @@ spark = create_spark_session(bucket)
 df = read_data(spark, 'parquet', f"gs://{bucket}/data/*.parquet")
 df = df.withColumn(polygon_level, col(polygon_level).cast(IntegerType()))
 
-country_codes_df = read_parquet_data(spark, 'csv', f"gs://{bucket}/code/country.csv")
+country_codes_df = read_data(spark, 'csv', f"gs://{bucket}/code/country.csv")
 
 
 # filter out long distances and noise fraction distributions
@@ -58,7 +62,7 @@ df = df.filter(df['home_to_ping_distance_category'] == "100+") \
 
 
 
-#write to BQ
+#write to Big query dataset
 df.write.format('bigquery') \
     .option('table', f'{dataset_id}.mmd_table') \
     .mode('append') \
