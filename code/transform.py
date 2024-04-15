@@ -45,13 +45,13 @@ spark = create_spark_session(bucket)
 df = read_parquet_data(spark, f"gs://{bucket}/data/*.parquet")
 df = df.withColumn(polygon_level, col(polygon_level).cast(IntegerType()))
 
-contry_df = read_parquet_data(spark, f"gs://{bucket}/code/country.csv")
+country_codes_df = read_parquet_data(spark, f"gs://{bucket}/code/country.csv")
 
 
 # filter out long distances and noise fraction distributions
 df = df.filter(df['home_to_ping_distance_category'] == "100+") \
         .filter(df['distance_category_ping_fraction'] > 0) \
-        .join(country_df, on=[country_df['country_iso2'] == df['country']])    
+        .join(country_codes_df, country_codes_df['alpha_3_code'] == df['country']])    
 
 
 
