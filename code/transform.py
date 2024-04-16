@@ -46,6 +46,7 @@ def read_data(spark: SparkSession, format: str, path: str) -> DataFrame:
         return spark.read.format(format).option("headers", 'true').load(path)
 
 bucket = "mmd-bucket_meta-movement-dist" #['bucket']
+dataset_id = "mmd-dataset"
 spark = create_spark_session(bucket)
 
 df = read_data(spark, 'parquet', f"gs://{bucket}/data/*.parquet")
@@ -54,7 +55,7 @@ df = df.withColumn(polygon_level, col(polygon_level).cast(IntegerType()))
 country_codes_df = read_data(spark, 'csv', f"gs://{bucket}/code/country.csv")
 
 
-# filter out long distances and noise fraction distributions
+# Filter out long distances and noise fraction distributions
 df = df.filter(df['home_to_ping_distance_category'] == "100+") \
         .filter(df['distance_category_ping_fraction'] > 0) \
         .join(country_codes_df, country_codes_df['alpha_3_code'] == df['country']])    
@@ -62,7 +63,11 @@ df = df.filter(df['home_to_ping_distance_category'] == "100+") \
 
 
 
-#write to Big query dataset
+"""
+Write to Big query dataset
+Partitioned by Date Field
+Clustering by Country field
+"""
 df.write.format('bigquery') \
     .option('table', f'{dataset_id}.mmd_table') \
     .mode('append') \
