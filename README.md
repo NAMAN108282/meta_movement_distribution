@@ -46,6 +46,8 @@ The data pipeline consists of two Prefect flows:
         - Create tables in BigQuery else append rows
         - Start Google Dataproc Cluster
         - Read Parquet files in GCS and load them into tables
+        - Table is partitioned by Date field (Each day has multiple area data)
+        - Table is clistered by country (To order each country)
         - Read the tables and create reporting tables with aggregated data
         - Stop Dataproc Cluster
 
