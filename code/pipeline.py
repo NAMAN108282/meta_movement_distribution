@@ -1,15 +1,13 @@
 from datetime import datetime
 
 from google.cloud import dataproc_v1
-from google.cloud.bigquery import TimePartitioning
 from google.cloud.dataproc_v1.types import StartClusterRequest
-from google.oauth2 import service_account
 
 from prefect import flow, task
 from prefect_gcp import GcpCredentials
 from prefect_gcp.bigquery import bigquery_create_table
 from utils import  get_dataproc_client, wait_cluster_status
-from config import read_local_config
+from config import read_config
 
 @task(log_prints=True)
 def submit_batch(
@@ -29,15 +27,16 @@ def submit_batch(
             "cluster_name": cluster_name
         },
         "reference": {
-            "job_id": f"job-{job_name}---{current_timestamp}",
+            "job_id": f"job-{job_name}-{current_timestamp}",
             "project_id": project_id
         },
         "pyspark_job": {
             "main_python_file_uri": f"gs://{bucket}/code/{python_file}",
             "properties": {},
             "jar_file_uris": ["gs://spark-lib/bigquery/spark-bigquery-latest_2.12.jar"],
-            "python_file_uris": [f"gs://{bucket}/code/utils.py"],
-            "file_uris":[f"gs://{bucket}/code/config.json"]
+            "python_file_uris": [f"gs://{bucket}/code/utils.py",
+                                f"gs://{bucket}/code/config.py"],
+            "file_uris":[f"gs://{bucket}/code/config.json",]
         }
     }
     operation = job_client.submit_job_as_operation(
@@ -60,7 +59,7 @@ def start_cluster(project_id: str, region: str, cluster_name: str):
     )
 
     operation = dataproc_client.start_cluster(request=request)
-    print("Waiting to complete!")
+    print("Waiting to start cluster!")
 
     response = operation.result()
     wait_cluster_status(dataproc_client, project_id, region, cluster_name, dataproc_v1.ClusterStatus.State.RUNNING)
@@ -85,7 +84,7 @@ def stop_cluster(
 
     operation = dataproc_client.stop_cluster(request=request)
 
-    print("Waiting to complete!")
+    print("Waiting to stop cluster!")
     response = operation.result()
 
     # Wait for the cluster to be in the STOPPED status
@@ -97,7 +96,7 @@ def stop_cluster(
 def main_pipeline(target_date: str = None) -> None:
 
     # Params to submit spark job  
-    config = read_local_config()   
+    config = read_config()   
     project_id = config['project_id']
     cluster_name = config['cluster_name']
     region = config['region']
