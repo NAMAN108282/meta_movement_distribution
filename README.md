@@ -147,4 +147,4 @@ Discover insights from live and interactive dashboard, which is updated monthly.
 
     `prefect deployment build code/ingest_data_gcs.py:save_gcs --name ingest_data_gcs --cron "59 22 L * *"  `
 
-    `prefect deployment build code/pipeline.py:main_pipeline --name transform_report --cron "59 22 L * *" `
+    `prefect deployment build code/pipeline.py:main_pipeline --name transform_report --cron "59 23 L * *" `
