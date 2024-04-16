@@ -5,7 +5,7 @@ import zipfile
 import pandas as pd
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
-from config import read_local_config
+from config import read_config
 
 
 
@@ -58,7 +58,7 @@ def write_files(gcs_block):
 @flow()
 def save_gcs():
     url = "https://data.humdata.org/dataset/movement-distribution"
-    config = read_local_config()   
+    config = read_config()   
     gcs_block = config['prefect_gcs_block']
 
     urls = urls_scrapper(url)
